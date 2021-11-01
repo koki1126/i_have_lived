@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'constants.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -9,29 +11,32 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  DateTime pickedDate = DateTime.now();
+  DateTime displayDate = DateTime.now();
+  dynamic livedDays = 0;
+  DateTime now = DateTime.now();
 
   //日付を取得する
-  selectedDate(BuildContext context) async {
-    final selected = await showDatePicker(
+  getselectedDate(BuildContext context) async {
+    // initializeDateFormatting('ja');
+    final selectedDate = await showDatePicker(
       initialDatePickerMode: DatePickerMode.year,
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1940),
       lastDate: DateTime.now(),
     );
-    if (selected != null) {
+    if (selectedDate != null) {
       setState(
         () {
-          pickedDate = selected;
-          // _pickedDateText = (DateFormat.yMMMd()).format(selected);
+          displayDate = selectedDate;
+          dynamic lived = now.difference(selectedDate).inDays + 1;
+          livedDays = lived;
         },
       );
     }
   }
 
   //生まれてからの日付を取得する
-  // Future<void>
 
   @override
   Widget build(BuildContext context) {
@@ -41,17 +46,58 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: Colors.blueGrey,
         child: const Icon(Icons.calendar_today),
         onPressed: () {
-          selectedDate(context);
+          getselectedDate(context);
         },
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              DateFormat.yMMMd().format(pickedDate),
-              style: const TextStyle(fontSize: 30),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: Container(
+                height: 240,
+                width: 300,
+                color: Colors.white70,
+                child: Column(
+                  children: [
+                    const Text(
+                      'あなたの生まれた日は',
+                      style: kTextDecoration,
+                    ),
+                    Text(
+                      DateFormat.yMMMd().format(displayDate),
+                      style: kNumberDecoration,
+                    ),
+                  ],
+                ),
+              ),
             ),
+            const SizedBox(
+              height: 30.0,
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: Container(
+                height: 240,
+                width: 300,
+                color: Colors.white70,
+                child: Column(
+                  children: [
+                    const Text(
+                      'あなたの人生は',
+                      style: kTextDecoration,
+                    ),
+                    Text(
+                      '$livedDays日目です',
+                      style: kNumberDecoration,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Text()
           ],
         ),
       ),
