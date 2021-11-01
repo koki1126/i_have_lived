@@ -7,4 +7,5 @@ const kTextDecoration = TextStyle(
 
 const kNumberDecoration = TextStyle(
   fontSize: 40,
+  // color: Colors.lime,
 );
