@@ -39,7 +39,7 @@ class _MainPageState extends State<MainPage> {
       backgroundColor: Colors.blueGrey,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blueGrey,
-        child: Icon(Icons.calendar_today),
+        child: const Icon(Icons.calendar_today),
         onPressed: () {
           selectedDate(context);
         },
@@ -49,8 +49,8 @@ class _MainPageState extends State<MainPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              pickedDate.toString(),
-              style: TextStyle(fontSize: 30),
+              DateFormat.yMMMd().format(pickedDate),
+              style: const TextStyle(fontSize: 30),
             ),
           ],
         ),
