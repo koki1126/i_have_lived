@@ -13,8 +13,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   DateTime displayDate = DateTime.now();
-  int livedDays = 0;
-
+  dynamic livedDays = 0;
   //日付を取得する FABを押したら出る
   getselectedDate(BuildContext context) async {
     // Intl.defaultLocale = 'ja_JP';
@@ -35,9 +34,6 @@ class _MainPageState extends State<MainPage> {
           int day = displayDate.day;
           saveData(year, month, day);
           calcLivedDays(pickedDate);
-
-          // int lived = calculateLivedDays(pickedDate);
-          // livedDays = lived;
         },
       );
     }
@@ -47,6 +43,8 @@ class _MainPageState extends State<MainPage> {
   calcLivedDays(DateTime n) {
     print('取得したlivedDays = $n');
     livedDays = DateTime.now().difference(n).inDays + 1;
+    print('livedDays = $livedDays');
+    livedDays = livedDays.toString();
   }
 
   //日付を保存する
@@ -61,11 +59,11 @@ class _MainPageState extends State<MainPage> {
   }
 
   //日付を読み込む
-  loadDisplayDate() async {
+  Future<DateTime> loadDisplayDate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int year = prefs.getInt('BIRTH_YEAR') ?? 1996;
-    int month = prefs.getInt('BIRTH_MONTH') ?? 1;
-    int day = prefs.getInt('BIRTH_DAY') ?? 23;
+    int year = prefs.getInt('BIRTH_YEAR') ?? 2020;
+    int month = prefs.getInt('BIRTH_MONTH') ?? 10;
+    int day = prefs.getInt('BIRTH_DAY') ?? 10;
     print('$year in loadDisplayDate');
     print('$month in loadDisplayDate');
     print('$day in loadDisplayDate');
@@ -78,92 +76,82 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    print('hello world');
     loadDisplayDate();
-    setState(() {
-      calcLivedDays(displayDate);
-    });
+    calcLivedDays(displayDate);
+    // calcLivedDays(displayDate);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blueGrey,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blueGrey,
-        child: const Icon(Icons.calendar_today),
-        onPressed: () {
-          getselectedDate(context);
-        },
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: Container(
-                height: 240,
-                width: 300,
-                color: Colors.white70,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'あなたの生まれた日は',
-                      style: kTextDecoration,
+    return FutureBuilder(
+      future: calcLivedDays(displayDate),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return Scaffold(
+          backgroundColor: Colors.blueGrey,
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.blueGrey,
+            child: const Icon(Icons.calendar_today),
+            onPressed: () {
+              getselectedDate(context);
+            },
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    height: 240,
+                    width: 300,
+                    color: Colors.white70,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'あなたの生まれた日は',
+                          style: kTextDecoration,
+                        ),
+                        Text(
+                          DateFormat.yMMMd().format(displayDate),
+                          style: kNumberDecoration,
+                        ),
+                      ],
                     ),
-                    Text(
-                      DateFormat.yMMMd().format(displayDate),
-                      style: kNumberDecoration,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(
-              height: 30.0,
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: Container(
-                height: 240,
-                width: 300,
-                color: Colors.white70,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'あなたの人生は',
-                      style: kTextDecoration,
-                    ),
-                    Text(
-                      '$livedDays日目です',
-                      style: kNumberDecoration,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.blueGrey,
-                        onPrimary: Colors.white,
-                      ),
-                      onPressed: () {
-                        // setState(() {});
-                        setState(
-                          () {
-                            calcLivedDays(displayDate);
-                          },
-                        );
-                      },
-                      child: const Text('計算する'),
-                    ),
-                  ],
+                const SizedBox(
+                  height: 30.0,
                 ),
-              ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    height: 240,
+                    width: 300,
+                    color: Colors.white70,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        //デバッグ用
+                        const Text(
+                          'あなたの人生は',
+                          style: kTextDecoration,
+                        ),
+                        Text(
+                          '$livedDays日目です',
+                          style: kNumberDecoration,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Text()
+              ],
             ),
-
-            // Text()
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
