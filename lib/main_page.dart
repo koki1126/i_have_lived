@@ -14,7 +14,8 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   DateTime displayDate = DateTime.now();
   dynamic livedDays = 0;
-  //日付を取得する FABを押したら出る
+
+  //日付を設定する。カレンダーが出てくる
   getselectedDate(BuildContext context) async {
     // Intl.defaultLocale = 'ja_JP';
     // await initializeDateFormatting();
@@ -40,11 +41,15 @@ class _MainPageState extends State<MainPage> {
   }
 
   //生まれてからの日付を計算する
-  calcLivedDays(DateTime n) {
+  Future<String> calcLivedDays(DateTime n) async {
     print('取得したlivedDays = $n');
     livedDays = DateTime.now().difference(n).inDays + 1;
     print('livedDays = $livedDays');
-    livedDays = livedDays.toString();
+    return livedDays.toString();
+    // return livedDays = livedDays;
+    //エラーが発生した。
+    // Exception has occurred.
+    // _TypeError (type 'int' is not a subtype of type 'Future<dynamic>')
   }
 
   //日付を保存する
@@ -78,7 +83,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     print('hello world');
     loadDisplayDate();
-    calcLivedDays(displayDate);
+    // calcLivedDays(displayDate);
     // calcLivedDays(displayDate);
   }
 
@@ -139,14 +144,13 @@ class _MainPageState extends State<MainPage> {
                           style: kTextDecoration,
                         ),
                         Text(
-                          '$livedDays日目です',
+                          '${livedDays.toString()}日目です',
                           style: kNumberDecoration,
                         ),
                       ],
                     ),
                   ),
                 ),
-                // Text()
               ],
             ),
           ),
