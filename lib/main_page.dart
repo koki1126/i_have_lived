@@ -67,10 +67,6 @@ class _MainPageState extends State<MainPage> {
     livedDays = DateTime.now().difference(n).inDays + 1;
     print('livedDays = $livedDays');
     return livedDays.toString();
-    // return livedDays = livedDays;
-    //エラーが発生した。
-    // Exception has occurred.
-    // _TypeError (type 'int' is not a subtype of type 'Future<dynamic>')
   }
 
   //日付を保存する
@@ -87,9 +83,9 @@ class _MainPageState extends State<MainPage> {
   //日付を読み込む
   Future<DateTime> loadDisplayDate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int year = prefs.getInt('BIRTH_YEAR') ?? 2020;
-    int month = prefs.getInt('BIRTH_MONTH') ?? 10;
-    int day = prefs.getInt('BIRTH_DAY') ?? 10;
+    int year = prefs.getInt('BIRTH_YEAR') ?? DateTime.now().year;
+    int month = prefs.getInt('BIRTH_MONTH') ?? DateTime.now().month;
+    int day = prefs.getInt('BIRTH_DAY') ?? DateTime.now().day;
     print('$year in loadDisplayDate');
     print('$month in loadDisplayDate');
     print('$day in loadDisplayDate');
@@ -113,8 +109,6 @@ class _MainPageState extends State<MainPage> {
     return displayDate = DateTime.parse(
       "${year.toString()}-$stMonth-$stDay",
     );
-    //メモ 一桁だとエラー？
-    //メモ 月と日のどちらかが一桁だとエラーになる
   }
 
   @override
@@ -122,9 +116,6 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     checkFirstLaunch();
     loadDisplayDate();
-
-    // calcLivedDays(displayDate);
-    // calcLivedDays(displayDate);
   }
 
   @override
@@ -178,7 +169,6 @@ class _MainPageState extends State<MainPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        //デバッグ用
                         const Text(
                           'あなたの人生は',
                           style: kTextDecoration,
