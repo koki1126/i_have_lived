@@ -94,8 +94,24 @@ class _MainPageState extends State<MainPage> {
     print('$month in loadDisplayDate');
     print('$day in loadDisplayDate');
     setState(() {}); //画面に表示するため。暫定。
+
+    String stMonth = '';
+    String stDay = '';
+
+    if (month < 10) {
+      stMonth = month.toString();
+      stMonth = '0' + stMonth;
+      print('$stMonth in month digit check');
+    }
+
+    if (day < 10) {
+      stDay = day.toString();
+      stDay = '0' + stDay;
+      print('$stDay in month digit check');
+    }
+
     return displayDate = DateTime.parse(
-      "${year.toString()}-${month.toString()}-${day.toString()}",
+      "${year.toString()}-$stMonth-$stDay",
     );
     //メモ 一桁だとエラー？
     //メモ 月と日のどちらかが一桁だとエラーになる
