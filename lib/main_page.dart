@@ -15,6 +15,26 @@ class _MainPageState extends State<MainPage> {
   DateTime displayDate = DateTime.now();
   dynamic livedDays = 0;
 
+  //初回起動化を確認する
+  Future checkFirstLaunch() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool seen = (prefs.getBool('SEEN') ?? false);
+    print('${seen} after define seen');
+    if (seen == false) {
+      print('$seen in checkfirstlaunch');
+      getselectedDate(context);
+      saveFirstLaunch(seen);
+    } else {
+      print('$seen in checkfirstlaunch');
+    }
+  }
+
+  //起動情報を保存する
+  saveFirstLaunch(bool seen) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('SEEN', true);
+  }
+
   //日付を設定する。カレンダーが出てくる
   getselectedDate(BuildContext context) async {
     // Intl.defaultLocale = 'ja_JP';
@@ -22,6 +42,7 @@ class _MainPageState extends State<MainPage> {
     final pickedDate = await showDatePicker(
       initialDatePickerMode: DatePickerMode.year,
       context: context,
+      helpText: '誕生日を教えて下さい',
       initialDate: DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
@@ -76,13 +97,16 @@ class _MainPageState extends State<MainPage> {
     return displayDate = DateTime.parse(
       "${year.toString()}-${month.toString()}-${day.toString()}",
     );
+    //メモ 一桁だとエラー？
+    //メモ 月と日のどちらかが一桁だとエラーになる
   }
 
   @override
   void initState() {
     super.initState();
-    print('hello world');
+    checkFirstLaunch();
     loadDisplayDate();
+
     // calcLivedDays(displayDate);
     // calcLivedDays(displayDate);
   }
