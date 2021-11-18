@@ -19,7 +19,7 @@ class _MainPageState extends State<MainPage> {
   Future checkFirstLaunch() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool seen = (prefs.getBool('SEEN') ?? false);
-    print('${seen} after define seen');
+    print('$seen after define seen');
     if (seen == false) {
       print('$seen in checkfirstlaunch');
       getselectedDate(context);
