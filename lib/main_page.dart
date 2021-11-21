@@ -21,11 +21,8 @@ class _MainPageState extends State<MainPage> {
     bool seen = (prefs.getBool('SEEN') ?? false);
     print('$seen after define seen');
     if (seen == false) {
-      print('$seen in checkfirstlaunch');
       getselectedDate(context);
       saveFirstLaunch(seen);
-    } else {
-      print('$seen in checkfirstlaunch');
     }
   }
 
@@ -97,13 +94,15 @@ class _MainPageState extends State<MainPage> {
     if (month < 10) {
       stMonth = month.toString();
       stMonth = '0' + stMonth;
-      print('$stMonth in month digit check');
+    } else {
+      stMonth = month.toString();
     }
 
     if (day < 10) {
       stDay = day.toString();
       stDay = '0' + stDay;
-      print('$stDay in month digit check');
+    } else {
+      stDay = day.toString();
     }
 
     return displayDate = DateTime.parse(
