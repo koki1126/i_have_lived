@@ -38,6 +38,7 @@ class _MainPageState extends State<MainPage> {
     // await initializeDateFormatting();
     final pickedDate = await showDatePicker(
       initialDatePickerMode: DatePickerMode.year,
+      locale: const Locale('ja'),
       context: context,
       helpText: '誕生日を教えて下さい',
       initialDate: DateTime.now(),
@@ -149,7 +150,11 @@ class _MainPageState extends State<MainPage> {
                           style: kTextDecoration,
                         ),
                         Text(
-                          DateFormat.yMMMd().format(displayDate),
+                          DateFormat.y('ja').format(displayDate),
+                          style: kNumberDecoration,
+                        ),
+                        Text(
+                          DateFormat.MMMd('ja').format(displayDate),
                           style: kNumberDecoration,
                         ),
                       ],
