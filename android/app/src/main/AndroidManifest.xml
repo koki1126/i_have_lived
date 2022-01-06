@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.i_have_lived">
+    package="com.kokit.i_have_lived">
    <application
-        android:label="i_have_lived"
+        android:label="com.kokit.i_have_lived"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

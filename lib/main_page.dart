@@ -20,7 +20,7 @@ class _MainPageState extends State<MainPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool seen = (prefs.getBool('SEEN') ?? false);
     print('初回起動確認 : $seen');
-    if (seen == false) {
+    if (!seen) {
       getselectedDate(context);
       saveFirstLaunch(seen);
     }
