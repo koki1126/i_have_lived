@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:i_have_lived/main_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'main_page.dart';
 
 void main() {
+  //画面の固定化に必要
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   runApp(MyApp());
 }
 
