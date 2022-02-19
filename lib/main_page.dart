@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -45,9 +46,11 @@ class _MainPageState extends State<MainPage> {
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
+
     if (pickedDate != null) {
       setState(
         () {
+          //TODO load ad
           displayDate = pickedDate;
           int year = displayDate.year;
           int month = displayDate.month;
@@ -111,9 +114,17 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  final BannerAd myBanner = BannerAd(
+    size: AdSize.banner,
+    adUnitId: 'ca-app-pub-9425623246062001/8288374356',
+    listener: const BannerAdListener(),
+    request: const AdRequest(),
+  );
+
   @override
   void initState() {
     super.initState();
+    myBanner.load();
     checkFirstLaunch();
     loadDisplayDate();
   }
@@ -184,6 +195,13 @@ class _MainPageState extends State<MainPage> {
                       ],
                     ),
                   ),
+                ),
+                //TODO 位置を調整する
+                Container(
+                  alignment: Alignment.center,
+                  child: AdWidget(ad: myBanner),
+                  width: myBanner.size.width.toDouble(),
+                  height: myBanner.size.height.toDouble(),
                 ),
               ],
             ),
