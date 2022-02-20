@@ -46,11 +46,9 @@ class _MainPageState extends State<MainPage> {
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-
     if (pickedDate != null) {
       setState(
         () {
-          //TODO load ad
           displayDate = pickedDate;
           int year = displayDate.year;
           int month = displayDate.month;
@@ -116,15 +114,20 @@ class _MainPageState extends State<MainPage> {
 
   final BannerAd myBanner = BannerAd(
     size: AdSize.banner,
-    adUnitId: 'ca-app-pub-9425623246062001/8288374356',
+    // adUnitId: 'ca-app-pub-9425623246062001/8288374356', //本番
+    adUnitId: 'ca-app-pub-3940256099942544/6300978111', //テスト用
     listener: const BannerAdListener(),
     request: const AdRequest(),
   );
 
+  loadingAd() async {
+    await myBanner.load();
+  }
+
   @override
   void initState() {
     super.initState();
-    myBanner.load();
+    loadingAd();
     checkFirstLaunch();
     loadDisplayDate();
   }
@@ -143,71 +146,90 @@ class _MainPageState extends State<MainPage> {
               getselectedDate(context);
             },
           ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: Container(
-                    height: 240,
-                    width: 300,
-                    color: Colors.white70,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'あなたの生まれた日は',
-                          style: kTextDecoration,
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Container(
+                          height: 240,
+                          width: 300,
+                          color: Colors.white70,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'あなたの生まれた日は',
+                                style: kTextDecoration,
+                              ),
+                              Text(
+                                DateFormat.y('ja').format(displayDate),
+                                style: kNumberDecoration,
+                              ),
+                              Text(
+                                DateFormat.MMMd('ja').format(displayDate),
+                                style: kNumberDecoration,
+                              ),
+                            ],
+                          ),
                         ),
-                        Text(
-                          DateFormat.y('ja').format(displayDate),
-                          style: kNumberDecoration,
+                      ),
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Container(
+                          height: 240,
+                          width: 300,
+                          color: Colors.white70,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'あなたの人生は',
+                                style: kTextDecoration,
+                              ),
+                              Text(
+                                '${livedDays.toString()}日目です',
+                                style: kNumberDecoration,
+                              ),
+                            ],
+                          ),
                         ),
-                        Text(
-                          DateFormat.MMMd('ja').format(displayDate),
-                          style: kNumberDecoration,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(
-                  height: 30.0,
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: Container(
-                    height: 240,
-                    width: 300,
-                    color: Colors.white70,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'あなたの人生は',
-                          style: kTextDecoration,
-                        ),
-                        Text(
-                          '${livedDays.toString()}日目です',
-                          style: kNumberDecoration,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                //TODO 位置を調整する
-                Container(
-                  alignment: Alignment.center,
+              ),
+              Expanded(
+                child: Container(
+                  alignment: Alignment.bottomLeft,
                   child: AdWidget(ad: myBanner),
                   width: myBanner.size.width.toDouble(),
                   height: myBanner.size.height.toDouble(),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
     );
   }
 }
+
+
+
+              // Container(
+              //   alignment: Alignment.bottomCenter,
+              //   child: AdWidget(ad: myBanner),
+              //   width: myBanner.size.width.toDouble(),
+              //   height: myBanner.size.height.toDouble(),
+              // ),
