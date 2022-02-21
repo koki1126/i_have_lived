@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         Locale("ja"),
       ],
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'あなたの人生何日目？',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
