@@ -224,12 +224,3 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
-
-
-
-              // Container(
-              //   alignment: Alignment.bottomCenter,
-              //   child: AdWidget(ad: myBanner),
-              //   width: myBanner.size.width.toDouble(),
-              //   height: myBanner.size.height.toDouble(),
-              // ),
