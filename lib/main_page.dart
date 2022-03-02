@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -124,10 +125,32 @@ class _MainPageState extends State<MainPage> {
     await myBanner.load();
   }
 
+  //ローカル通知(Android)
+  Future<void> notify() {
+    final flnp = FlutterLocalNotificationsPlugin();
+    return flnp
+        .initialize(
+          InitializationSettings(
+            android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+          ),
+        )
+        .then((_) => flnp.show(
+            0,
+            'これはテスト広告です',
+            'あなたの○○日目の人生が始まりました！',
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                'channel_id',
+                'channel_name',
+              ),
+            )));
+  }
+
   @override
   void initState() {
     super.initState();
     loadingAd();
+    notify();
     checkFirstLaunch();
     loadDisplayDate();
   }
