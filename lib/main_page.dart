@@ -5,10 +5,12 @@ import 'constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
-
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -107,12 +109,12 @@ class _MainPageState extends State<MainPage> {
     } else {
       stDay = day.toString();
     }
-
     return displayDate = DateTime.parse(
       "${year.toString()}-$stMonth-$stDay",
     );
   }
 
+  //Admobの設定
   final BannerAd myBanner = BannerAd(
     size: AdSize.banner,
     adUnitId: 'ca-app-pub-9425623246062001/8288374356', //本番
@@ -125,25 +127,58 @@ class _MainPageState extends State<MainPage> {
     await myBanner.load();
   }
 
+  //毎日通知
+  Future<tz.TZDateTime> scheduleDaily(Time time) async {
+    tz.initializeTimeZones();
+    final now = tz.TZDateTime.now(tz.getLocation('Asia/Tokyo'));
+    //UTC→JST は UTC + 9
+    //デイリー通知
+    final scheduleDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      time.hour,
+      time.minute,
+      time.second,
+    );
+    return scheduleDate.isBefore(now)
+        ? scheduleDate.add(const Duration(days: 1))
+        : scheduleDate;
+  }
+
   //ローカル通知(Android)
-  Future<void> notify() {
+  Future<void> notify() async {
+    // await loadDisplayDate();
     final flnp = FlutterLocalNotificationsPlugin();
+
     return flnp
         .initialize(
-          InitializationSettings(
+          const InitializationSettings(
             android: AndroidInitializationSettings('@mipmap/ic_launcher'),
           ),
         )
-        .then((_) => flnp.show(
+        .then(
+          (_) => flnp.zonedSchedule(
             0,
-            'これはテスト広告です',
-            'あなたの○○日目の人生が始まりました！',
-            NotificationDetails(
+            '☀おはようございます☀',
+            '$livedDays日目の人生が始まりました！',
+            tz.TZDateTime.now(tz.UTC).add(
+              Duration(seconds: 1),
+            ),
+            // scheduleDaily(const Time(21, 14, 00)),
+            const NotificationDetails(
               android: AndroidNotificationDetails(
-                'channel_id',
+                'channnel_id',
                 'channel_name',
               ),
-            )));
+            ),
+            androidAllowWhileIdle: true,
+            uiLocalNotificationDateInterpretation:
+                UILocalNotificationDateInterpretation.absoluteTime,
+            matchDateTimeComponents: DateTimeComponents.time,
+          ),
+        );
   }
 
   @override
@@ -153,6 +188,7 @@ class _MainPageState extends State<MainPage> {
     notify();
     checkFirstLaunch();
     loadDisplayDate();
+    // notify();
   }
 
   @override
@@ -176,7 +212,7 @@ class _MainPageState extends State<MainPage> {
                 flex: 3,
                 child: Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ClipRRect(
@@ -232,14 +268,14 @@ class _MainPageState extends State<MainPage> {
                   ),
                 ),
               ),
-              Expanded(
-                child: Container(
-                  alignment: Alignment.bottomLeft,
-                  child: AdWidget(ad: myBanner),
-                  width: myBanner.size.width.toDouble(),
-                  height: myBanner.size.height.toDouble(),
-                ),
-              ),
+              // Expanded(
+              //   child: Container(
+              //     alignment: Alignment.bottomLeft,
+              //     child: AdWidget(ad: myBanner),
+              //     width: myBanner.size.width.toDouble(),
+              //     height: myBanner.size.height.toDouble(),
+              //   ),
+              // ),
             ],
           ),
         );
